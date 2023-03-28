@@ -1,0 +1,1847 @@
+openapi: 3.1.0
+x-stoplight:
+  id: 1ho22pl6hug83
+info:
+  title: Money Forward Invoice API
+  version: 3.0.1
+  summary: Money Forward Invoice API
+  description: |-
+    ### マネーフォワード クラウド請求書APIについて
+    https://biz.moneyforward.com/support/invoice/guide/api-guide/a03.html
+    ### マネーフォワード クラウド請求書API v3 スタートアップガイド
+    https://biz.moneyforward.com/support/invoice/guide/api-guide/a04.html
+servers:
+  - url: 'https://invoice.moneyforward.com/api/v3'
+paths:
+  /office:
+    parameters: []
+    get:
+      summary: Get My Office
+      tags:
+        - Office
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Office'
+        '404':
+          description: Not Found
+      operationId: get-office
+      description: Retrieve the information of the user with the matching user ID.
+    put:
+      summary: Update My Office
+      operationId: put-office
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Office'
+        '400':
+          description: Bad Request
+      requestBody:
+        $ref: '#/components/requestBodies/OfficeUpdateRequest'
+      tags:
+        - Office
+  /partners:
+    get:
+      summary: Get Partners
+      tags:
+        - Partner
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Partner'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationData'
+                required:
+                  - data
+                  - pagination
+      operationId: get-partners
+      parameters:
+        - schema:
+            type: integer
+            minimum: 1
+          in: query
+          name: page
+          description: 'default: 1'
+        - schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          in: query
+          name: per_page
+          description: 'default: 100'
+    post:
+      summary: Create New Partner
+      operationId: post-partners
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '400':
+          description: Bad Request
+      requestBody:
+        $ref: '#/components/requestBodies/PartnerCreateRequest'
+      tags:
+        - Partner
+  '/partners/{partner_id}':
+    parameters:
+      - schema:
+          type: string
+        name: partner_id
+        in: path
+        required: true
+    get:
+      summary: Get a Partner
+      tags:
+        - Partner
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '404':
+          description: Not Found
+      operationId: get-partners-id
+    put:
+      summary: Update a Partner
+      operationId: put-partners-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '400':
+          description: Bad Request
+      requestBody:
+        $ref: '#/components/requestBodies/PartnerUpdateRequest'
+      tags:
+        - Partner
+    delete:
+      summary: Delete a Partner
+      operationId: delete-partners-id
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+      description: ''
+      tags:
+        - Partner
+  '/partners/{partner_id}/departments':
+    parameters:
+      - schema:
+          type: string
+        name: partner_id
+        in: path
+        required: true
+    get:
+      summary: Get Departments
+      tags:
+        - Department
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Department'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationData'
+                required:
+                  - data
+                  - pagination
+        '404':
+          description: 'A partner is not found '
+      operationId: get-partners-id-partner-departments
+    post:
+      summary: Create New Department
+      operationId: post-partners-id-departments
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+        '400':
+          description: Bad Request
+        '404':
+          description: Partner is not Found
+      description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/DepartmentCreateRequest'
+      tags:
+        - Department
+  '/partners/{partner_id}/departments/{department_id}':
+    parameters:
+      - schema:
+          type: string
+        name: partner_id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: department_id
+        in: path
+        required: true
+    get:
+      summary: Get a Department
+      tags:
+        - Department
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+        '404':
+          description: |-
+            Partner is not found
+            Department is not found
+      operationId: get-partners-partner_id-departments-id
+    put:
+      summary: Update a Department
+      operationId: put-partners-partner_id-departments-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+        '400':
+          description: Bad Request
+        '404':
+          description: Partner is not found
+      requestBody:
+        $ref: '#/components/requestBodies/DepartmentUpdateRequest'
+      tags:
+        - Department
+    delete:
+      summary: Delete a Department
+      operationId: delete-partners-partner_id-departments-id
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: Partner is not found
+      tags:
+        - Department
+  /items:
+    get:
+      summary: Get Items
+      tags:
+        - Item
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Item'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationData'
+                required:
+                  - data
+                  - pagination
+      operationId: get-items
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: 'default: 1'
+        - schema:
+            type: integer
+          in: query
+          name: per_page
+          description: 'default: 100'
+    post:
+      summary: Create New Item
+      operationId: post-items
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Bad Request
+      requestBody:
+        $ref: '#/components/requestBodies/ItemCreateRequest'
+      tags:
+        - Item
+  '/items/{item_id}':
+    parameters:
+      - schema:
+          type: string
+        name: item_id
+        in: path
+        required: true
+    get:
+      summary: Get an Item
+      tags:
+        - Item
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Not Found
+      operationId: get-items-id
+    put:
+      summary: Update an Item
+      operationId: put-items-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Bad Request
+      requestBody:
+        $ref: '#/components/requestBodies/ItemUpdateRequest'
+      tags:
+        - Item
+    delete:
+      summary: Delete an Item
+      operationId: delete-items-id
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+      tags:
+        - Item
+  /billings:
+    get:
+      summary: Get Billings
+      tags:
+        - Billing
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Billing'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationData'
+                required:
+                  - data
+                  - pagination
+      operationId: get-billings
+      parameters:
+        - schema:
+            type: integer
+            minimum: 1
+          in: query
+          name: page
+          description: 'default: 1'
+        - schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          in: query
+          name: per_page
+          description: 'default: 100'
+        - schema:
+            type: string
+          in: query
+          name: excise_type
+          description: excise
+    post:
+      summary: Create New Billing
+      operationId: post-billings
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Billing'
+        '400':
+          description: Bad Request
+      requestBody:
+        $ref: '#/components/requestBodies/BillingCreateRequest'
+      tags:
+        - Billing
+  '/billings/{billing_id}':
+    parameters:
+      - schema:
+          type: string
+        name: billing_id
+        in: path
+        required: true
+    get:
+      summary: Get a Billing
+      tags:
+        - Billing
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Billing'
+        '404':
+          description: Not Found
+      operationId: get-billings-id
+    put:
+      summary: Update a Billing
+      operationId: put-billings-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Billing'
+      requestBody:
+        $ref: '#/components/requestBodies/BillingUpdateRequest'
+      tags:
+        - Billing
+    delete:
+      summary: Delete a Billing
+      operationId: delete-billings-id
+      responses:
+        '204':
+          description: No Content
+      tags:
+        - Billing
+  '/billings/{billing_id}/items':
+    parameters:
+      - schema:
+          type: string
+        name: billing_id
+        in: path
+        required: true
+    get:
+      summary: Get Items of a Billing
+      tags:
+        - Billing
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Item'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationData'
+                required:
+                  - data
+                  - pagination
+        '404':
+          description: A billing is not found
+      operationId: get-billings-id-items
+    post:
+      summary: Attach an Item into a Billing
+      operationId: post-billings-id-items
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '404':
+          description: A billing is not found
+      requestBody:
+        $ref: '#/components/requestBodies/ItemAttachRequest'
+      tags:
+        - Billing
+      description: ''
+  '/billings/{billing_id}/items/{item_id}':
+    parameters:
+      - schema:
+          type: string
+        name: billing_id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: item_id
+        in: path
+        required: true
+    get:
+      summary: Get an item if a billing has
+      tags:
+        - Billing
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: |-
+            A billing is not found
+            An item is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+      operationId: get-billings-billing_id-items-id
+      description: ''
+    delete:
+      summary: Detach an item from a billing
+      operationId: delete-billings-billing_id-items-id
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: A billing is not found
+      tags:
+        - Billing
+  '/billings/{billing_id}/payment_status':
+    parameters:
+      - schema:
+          type: string
+        name: billing_id
+        in: path
+        required: true
+    put:
+      summary: Update Payment Status of a Billing
+      operationId: put-billings-billing_id-payment_status
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Billing'
+        '400':
+          description: Bad Request
+        '404':
+          description: A billing is not found
+      requestBody:
+        $ref: '#/components/requestBodies/PaymentStatusUpdateRequest'
+      tags:
+        - Billing
+  '/billings/{billing_id}/posting':
+    parameters:
+      - schema:
+          type: string
+        name: billing_id
+        in: path
+        required: true
+    post:
+      summary: Apply to post the billing
+      operationId: post-billings-billing_id-posting
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      tags:
+        - Billing
+    delete:
+      summary: Cancel to post the billing
+      operationId: delete-billings-billing_id-posting
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      tags:
+        - Billing
+  /quotes:
+    get:
+      summary: Get Quotes
+      tags:
+        - Quote
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Quote'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationData'
+                required:
+                  - data
+                  - pagination
+      operationId: get-quotes
+      parameters:
+        - schema:
+            type: integer
+            minimum: 1
+          in: query
+          name: page
+          description: 'default: 1'
+        - schema:
+            type: integer
+            maximum: 100
+            minimum: 1
+          in: query
+          name: per_page
+          description: 'default: 100'
+        - schema:
+            type: string
+          in: query
+          name: excise_type
+          description: excise
+    post:
+      summary: Create New Quote
+      operationId: post-quotes
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+        '400':
+          description: Bad Request
+      requestBody:
+        $ref: '#/components/requestBodies/QuoteCreateRequest'
+      tags:
+        - Quote
+  '/quotes/{quote_id}':
+    parameters:
+      - schema:
+          type: string
+        name: quote_id
+        in: path
+        required: true
+    get:
+      summary: Get a Quote
+      tags:
+        - Quote
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Quote'
+        '404':
+          description: Not Found
+      operationId: get-quotes-quote_id
+    put:
+      summary: Update a Quote
+      operationId: put-quotes-quote_id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      requestBody:
+        $ref: '#/components/requestBodies/QuoteUpdateRequest'
+      tags:
+        - Quote
+    delete:
+      summary: Delete a Quote
+      operationId: delete-quotes-quote_id
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      tags:
+        - Quote
+  '/quotes/{quote_id}/items':
+    parameters:
+      - schema:
+          type: string
+        name: quote_id
+        in: path
+        required: true
+    get:
+      summary: Get Items of a Quote
+      tags:
+        - Quote
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Item'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationData'
+                required:
+                  - data
+                  - pagination
+        '404':
+          description: A quote is not found
+      operationId: get-quotes-id-items
+    post:
+      summary: Attach an Item into a Quote
+      operationId: post-quotes-quote_id-items
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '404':
+          description: A quote is not found
+      requestBody:
+        $ref: '#/components/requestBodies/ItemAttachRequest'
+      tags:
+        - Quote
+  '/quotes/{quote_id}/items/{item_id}':
+    parameters:
+      - schema:
+          type: string
+        name: quote_id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: item_id
+        in: path
+        required: true
+    get:
+      summary: Get an Item if a Quote has
+      tags:
+        - Quote
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+      operationId: get-quotes-quote_id-items-id
+      description: ''
+    delete:
+      summary: Detach the item from a quote
+      operationId: delete-quotes-quote_id-items-id
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: A quote is not found
+      tags:
+        - Quote
+  '/quotes/{quote_id}/posting':
+    parameters:
+      - schema:
+          type: string
+        name: quote_id
+        in: path
+        required: true
+    post:
+      summary: Apply to post the quote
+      operationId: post-quotes-quote_id-posting
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      tags:
+        - Quote
+    delete:
+      summary: Cancel to post the quote
+      operationId: delete-quotes-quote_id-posting
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      tags:
+        - Quote
+  '/quotes/{quote_id}/order_status':
+    parameters:
+      - schema:
+          type: string
+        name: quote_id
+        in: path
+        required: true
+    put:
+      summary: Update Order Status of the Quote
+      operationId: put-quote-quote_id-order_status
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_status:
+                  type: string
+                  description: |
+                    Available values:
+
+                    -1: Lost order
+
+                    0: Not set
+
+                    1: Not received
+
+                    2: Received
+              required:
+                - order_status
+      tags:
+        - Quote
+  '/quotes/{quote_id}/convert_to_billing':
+    parameters:
+      - schema:
+          type: string
+        name: quote_id
+        in: path
+        required: true
+    post:
+      summary: Convert the Quote to Billing
+      operationId: post-quotes-quote_id-convert_to_billing
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Billing'
+        '404':
+          description: Not Found
+      tags:
+        - Quote
+  /sent_histories:
+    get:
+      summary: Get Sent Histories
+      tags:
+        - SentHistory
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SentHistory'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationData'
+                required:
+                  - data
+                  - pagination
+      operationId: get-sent_histories
+      parameters:
+        - schema:
+            type: integer
+            minimum: 1
+          in: query
+          name: page
+          description: 'default: 1'
+        - schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          in: query
+          name: per_page
+          description: 'default: 100'
+components:
+  schemas:
+    Office:
+      title: Office
+      type: object
+      description: ''
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        zip:
+          type: string
+        prefecture:
+          type: string
+        address1:
+          type: string
+        address2:
+          type: string
+        tel:
+          type: string
+        fax:
+          type: string
+        office_type:
+          type: string
+        office_code:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - created_at
+        - updated_at
+    Partner:
+      title: Partner
+      x-stoplight:
+        id: mnavdatyrxciq
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        name_kana:
+          type: string
+        name_suffix:
+          type: string
+        memo:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+        - departments
+    Department:
+      title: Department
+      x-stoplight:
+        id: bq8upk7nj10bc
+      type: object
+      properties:
+        id:
+          type: string
+        zip:
+          type: string
+        tel:
+          type: string
+        prefecture:
+          type: string
+        address1:
+          type: string
+        address2:
+          type: string
+        person_name:
+          type: string
+        person_title:
+          type: string
+        person_dept:
+          type: string
+        email:
+          type: string
+        cc_emails:
+          type: string
+        office_member_id:
+          type: string
+        office_member_name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - person_dept
+    Item:
+      title: Item
+      x-stoplight:
+        id: hw5km77y0ypvw
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+        detail:
+          type: string
+        unit:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+        is_deduct_withholding_tax:
+          type: boolean
+        excise:
+          type: string
+          enum:
+            - untaxable
+            - non_taxable
+            - tax_exemption
+            - five_percent
+            - eight_percent
+            - eight_percent_as_reduced_tax_rate
+            - ten_percent
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - code
+        - created_at
+        - updated_at
+    Billing:
+      title: Billing
+      x-stoplight:
+        id: dg6xplhmlhjct
+      type: object
+      properties:
+        id:
+          type: string
+        pdf_url:
+          type: string
+        operator_id:
+          type: string
+        department_id:
+          type: string
+        member_id:
+          type: string
+        member_name:
+          type: string
+        partner_id:
+          type: string
+        partner_name:
+          type: string
+        office_id:
+          type: string
+        office_name:
+          type: string
+        office_detail:
+          type: string
+        title:
+          type: string
+        memo:
+          type: string
+        payment_condition:
+          type: string
+        billing_date:
+          type: string
+          format: date
+        due_date:
+          type: string
+          format: date
+        sales_date:
+          type: string
+          format: date
+        billing_number:
+          type: string
+        note:
+          type: string
+        document_name:
+          type: string
+        payment_status:
+          type: string
+        email_status:
+          type: string
+        posting_status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        is_downloaded:
+          type: boolean
+        is_locked:
+          type: boolean
+        deduct_price:
+          type: number
+        tag_names:
+          type: array
+          items:
+            type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        excise_price:
+          type: number
+        excise_price_of_untaxable:
+          type: number
+        excise_price_of_non_taxable:
+          type: number
+        excise_price_of_tax_exemption:
+          type: number
+        excise_price_of_five_percent:
+          type: number
+        excise_price_of_eight_percent:
+          type: number
+        excise_price_of_eight_percent_as_reduced_tax_rate:
+          type: number
+        excise_price_of_ten_percent:
+          type: number
+        subtotal_price:
+          type: number
+        subtotal_of_untaxable_excise:
+          type: number
+        subtotal_of_non_taxable_excise:
+          type: number
+        subtotal_of_tax_exemption_excise:
+          type: number
+        subtotal_of_five_percent_excise:
+          type: number
+        subtotal_of_eight_percent_excise:
+          type: number
+        subtotal_of_eight_percent_as_reduced_tax_rate_excise:
+          type: number
+        subtotal_of_ten_percent_excise:
+          type: number
+        total_price:
+          type: number
+      required:
+        - id
+        - pdf_url
+        - operator_id
+        - department_id
+        - member_id
+        - member_name
+        - partner_id
+        - partner_name
+        - office_name
+        - office_detail
+        - title
+        - billing_date
+        - due_date
+        - created_at
+        - excise_price
+        - subtotal_price
+        - total_price
+    Quote:
+      title: Quote
+      x-stoplight:
+        id: 1n11cz901hx4u
+      type: object
+      properties:
+        id:
+          type: string
+        pdf_url:
+          type: string
+        operator_id:
+          type: string
+        department_id:
+          type: string
+        member_id:
+          type: string
+        member_name:
+          type: string
+        partner_id:
+          type: string
+        partner_name:
+          type: string
+        partner_detail:
+          type: string
+        office_id:
+          type: string
+        office_name:
+          type: string
+        office_detail:
+          type: string
+        title:
+          type: string
+        memo:
+          type: string
+        quote_date:
+          type: string
+          format: date
+        quote_number:
+          type: string
+        note:
+          type: string
+        expired_date:
+          type: string
+          format: date
+        document_name:
+          type: string
+        order_status:
+          type: string
+        transmit_status:
+          type: string
+        posting_status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        is_downloaded:
+          type: boolean
+        is_locked:
+          type: boolean
+        deduct_price:
+          type: number
+        tag_names:
+          type: array
+          items:
+            type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        excise_price:
+          type: number
+        excise_price_of_untaxable:
+          type: number
+        excise_price_of_non_taxable:
+          type: number
+        excise_price_of_tax_exemption:
+          type: number
+        excise_price_of_five_percent:
+          type: number
+        excise_price_of_eight_percent:
+          type: number
+        excise_price_of_eight_percent_as_reduced_tax_rate:
+          type: number
+        excise_price_of_ten_percent:
+          type: number
+        subtotal_price:
+          type: number
+        subtotal_of_untaxable_excise:
+          type: number
+        subtotal_of_non_taxable_excise:
+          type: number
+        subtotal_of_tax_exemption_excise:
+          type: number
+        subtotal_of_five_percent_excise:
+          type: number
+        subtotal_of_eight_percent_excise:
+          type: number
+        subtotal_of_eight_percent_as_reduced_tax_rate_excise:
+          type: number
+        subtotal_of_ten_percent_excise:
+          type: number
+        total_price:
+          type: number
+      required:
+        - id
+        - pdf_url
+        - operator_id
+        - department_id
+        - member_id
+        - member_name
+        - partner_id
+        - partner_name
+        - office_name
+        - office_detail
+        - title
+        - quote_date
+        - expired_date
+        - created_at
+        - excise_price
+        - subtotal_price
+        - total_price
+    SentHistory:
+      title: SentHistory
+      x-stoplight:
+        id: lle67m3y8ul3v
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        operator_id:
+          type: string
+        document_type:
+          type: string
+        document_id:
+          type: string
+        from:
+          type: string
+        to:
+          type: string
+        cc:
+          type: string
+        sender_name:
+          type: string
+        replay_to:
+          type: string
+        sent_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - type
+        - operator_id
+        - document_type
+        - document_id
+        - from
+        - to
+        - cc
+        - sender_name
+        - replay_to
+        - sent_at
+    PaginationData:
+      title: PaginationData
+      type: object
+      properties:
+        total_count:
+          type: number
+        total_pages:
+          type: number
+        per_page:
+          type: number
+        current_page:
+          type: number
+      required:
+        - total_count
+        - total_pages
+        - per_page
+        - current_page
+  requestBodies:
+    PartnerCreateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                maxLength: 30
+              name:
+                type: string
+                maxLength: 100
+              name_kana:
+                type: string
+                maxLength: 350
+              name_suffix:
+                type: string
+              memo:
+                type: string
+                maxLength: 500
+            required:
+              - name
+      description: Request body for creating a Partner
+    PartnerUpdateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                maxLength: 30
+              name:
+                type: string
+                maxLength: 100
+              name_kana:
+                type: string
+                maxLength: 350
+              name_suffix:
+                type: string
+              memo:
+                type: string
+                maxLength: 500
+      description: Request body for updating a Partner
+    OfficeUpdateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                maxLength: 35
+              zip:
+                type: string
+                minLength: 7
+                maxLength: 8
+                pattern: '^\d{3}-?\d{4}$'
+              prefecture:
+                type: string
+              address1:
+                type: string
+                maxLength: 35
+              address2:
+                type: string
+                maxLength: 35
+              tel:
+                type: string
+                pattern: '^\+?[\d-]+$'
+                minLength: 7
+                maxLength: 20
+              fax:
+                type: string
+                minLength: 7
+                maxLength: 20
+                pattern: '^\+?[\d-]+$'
+      description: Request body for updating a Office
+    DepartmentCreateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              zip:
+                type: string
+                minLength: 7
+                maxLength: 8
+                pattern: '^\d{3}-?\d{4}$'
+              tel:
+                type: string
+                pattern: '^\+?[\d-]+$'
+                minLength: 7
+                maxLength: 20
+              prefecture:
+                type: string
+              address1:
+                type: string
+                maxLength: 80
+              address2:
+                type: string
+                maxLength: 80
+              person_name:
+                type: string
+                maxLength: 35
+              person_title:
+                type: string
+                maxLength: 35
+              person_dept:
+                type: string
+                maxLength: 35
+              office_member_name:
+                type: string
+                maxLength: 40
+              email:
+                type: string
+                maxLength: 255
+              cc_emails:
+                type: string
+                maxLength: 500
+            required:
+              - person_dept
+      description: Request body for creating a department
+    DepartmentUpdateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              zip:
+                type: string
+                minLength: 7
+                maxLength: 8
+                pattern: '^\d{3}-?\d{4}$'
+              tel:
+                type: string
+                pattern: '^\+?[\d-]+$'
+                minLength: 7
+                maxLength: 20
+              prefecture:
+                type: string
+              address1:
+                type: string
+                maxLength: 80
+              address2:
+                type: string
+                maxLength: 80
+              person_name:
+                type: string
+                maxLength: 35
+              person_title:
+                type: string
+                maxLength: 35
+              person_dept:
+                type: string
+                maxLength: 35
+              office_member_name:
+                type: string
+                maxLength: 40
+              email:
+                type: string
+                maxLength: 255
+              cc_emails:
+                type: string
+                maxLength: 500
+            required:
+              - person_dept
+      description: Request body for updating a department
+    ItemCreateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 50
+              code:
+                type: string
+                minLength: 1
+                maxLength: 30
+              detail:
+                type: string
+                maxLength: 200
+              unit:
+                type: string
+                maxLength: 20
+              price:
+                type: number
+                minimum: '-10_000_000'
+                maximum: '10_000_000'
+              quantity:
+                type: number
+                minimum: '-10_000_000'
+                maximum: '10_000_000'
+              is_deduct_withholding_tax:
+                type: boolean
+              excise:
+                type: string
+                enum:
+                  - untaxable
+                  - non_taxable
+                  - tax_exemption
+                  - five_percent
+                  - eight_percent
+                  - eight_percent_as_reduced_tax_rate
+                  - ten_percent
+            required:
+              - name
+              - excise
+      description: Request body for creating a Iv Item
+    ItemUpdateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 50
+              code:
+                type: string
+                minLength: 1
+                maxLength: 30
+              detail:
+                type: string
+                maxLength: 200
+              unit:
+                type: string
+                maxLength: 20
+              price:
+                type: number
+                minimum: '-10_000_000'
+                maximum: 10000000
+              quantity:
+                type: number
+                minimum: '-10_000_000'
+                maximum: '10_000_000'
+              is_deduct_withholding_tax:
+                type: boolean
+              excise:
+                type: string
+                enum:
+                  - untaxable
+                  - non_taxable
+                  - tax_exemption
+                  - five_percent
+                  - eight_percent
+                  - eight_percent_as_reduced_tax_rate
+                  - ten_percent
+      description: Request body for updating a Iv Item
+    BillingCreateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              department_id:
+                type: string
+              title:
+                type: string
+                maxLength: 200
+              memo:
+                type: string
+                maxLength: 50
+              payment_condition:
+                type: string
+                maxLength: 250
+              billing_date:
+                type: string
+                format: date
+              due_date:
+                type: string
+                format: date
+              sales_date:
+                type: string
+                format: date
+              billing_number:
+                type: number
+                maximum: 30
+              note:
+                type: string
+                maxLength: 550
+              document_name:
+                type: string
+                maxLength: 25
+              tag_names:
+                type: array
+                items:
+                  type: string
+                  maxLength: 255
+            required:
+              - department_id
+              - billing_date
+              - due_date
+      description: Request body for creating a billing
+    BillingUpdateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              department_id:
+                type: string
+              title:
+                type: string
+                minLength: 1
+                maxLength: 200
+              memo:
+                type: string
+                maxLength: 50
+              payment_condition:
+                type: string
+                maxLength: 250
+              billing_date:
+                type: string
+                format: date
+              due_date:
+                type: string
+                format: date
+              sales_date:
+                type: string
+                format: date
+              billing_number:
+                type: number
+              note:
+                type: string
+                maxLength: 550
+              document_name:
+                type: string
+                maxLength: 25
+              tag_names:
+                type: array
+                items:
+                  type: string
+                  maxLength: 255
+      description: Request body for updating a billing
+    PaymentStatusUpdateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - payment_status
+            properties:
+              payment_status:
+                type: string
+                description: |
+                  Available values:
+
+                  0: Not set
+
+                  1: Not payment
+
+                  2: Paid
+    QuoteCreateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              department_id:
+                type: string
+              quote_number:
+                type: number
+                maximum: 30
+              title:
+                type: string
+                maxLength: 200
+              memo:
+                type: string
+                maxLength: 50
+              quote_date:
+                type: string
+                format: date
+              expired_date:
+                type: string
+                format: date
+              note:
+                type: string
+                maxLength: 550
+              tag_names:
+                type: array
+                items:
+                  type: string
+                  maxLength: 255
+              document_name:
+                type: string
+                maxLength: 25
+            required:
+              - department_id
+              - quote_date
+              - expired_date
+      description: Request body for creating a quote
+    QuoteUpdateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              department_id:
+                type: string
+              quote_number:
+                type: number
+              title:
+                type: string
+                minLength: 1
+                maxLength: 200
+              memo:
+                type: string
+                maxLength: 50
+              quote_date:
+                type: string
+                format: date
+              expired_date:
+                type: string
+                format: date
+              note:
+                type: string
+                maxLength: 550
+              tag_names:
+                type: array
+                items:
+                  type: string
+                  maxLength: 255
+              document_name:
+                type: string
+                maxLength: 25
+      description: Request body for updating a quote
+    ItemAttachRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              item_id:
+                type: string
+            required:
+              - item_id
+  securitySchemes:
+    API Key:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://api.biz.moneyforward.com/authorize'
+          tokenUrl: 'https://api.biz.moneyforward.com/token'
+          scopes:
+            mfc/invoice/data.write: Grant read and write access to all your office's data
+            mfc/invoice/data.read: Grant read-only access to all your office's data
+          refreshUrl: 'https://api.biz.moneyforward.com/token'
